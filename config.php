@@ -30,15 +30,28 @@ function db(): PDO
     $database = getenv('DB_NAME') ?: 'attqwa_college';
     $username = getenv('DB_USER') ?: 'root';
     $password = getenv('DB_PASSWORD') ?: '';
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+    $sslCa = getenv('DB_SSL_CA');
+    if ($sslCa !== false && $sslCa !== '') {
+        if (!is_file($sslCa)) {
+            $sslCa = __DIR__ . DIRECTORY_SEPARATOR . $sslCa;
+        }
+        if (!is_file($sslCa)) {
+            throw new RuntimeException('The configured DB_SSL_CA file could not be found.');
+        }
+        $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+    }
+
     $pdo = new PDO(
         "mysql:host={$host};dbname={$database};charset=utf8mb4",
         $username,
         $password,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]
+        $options
     );
 
     return $pdo;

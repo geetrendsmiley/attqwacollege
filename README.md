@@ -18,11 +18,14 @@ A responsive school website with home, about, contact, and student portal pages.
    DB_NAME=attqwa_college
    DB_USER=your_mysql_user
    DB_PASSWORD=your_mysql_password
+   DB_SSL_CA=global-bundle.pem
    APP_BASE_URL=https://your-public-site.example
    KORA_SECRET_KEY=your_kora_secret_key
    ```
 
-   Do not commit credentials or expose the Kora secret in browser code.
+   `DB_SSL_CA` is optional for local MySQL. For AWS RDS, use the bundled
+   `global-bundle.pem` to verify the database server's TLS certificate. Do not
+   commit database credentials or expose the Kora secret in browser code.
 3. Add each enrolled student to the `students` table from a trusted school
    administration process. Students activate their account with the admission
    number and email already on their school record.
@@ -38,8 +41,11 @@ fails closed when the Kora secret or the public HTTPS site URL is not set.
 
 The Vercel configuration uses the community PHP runtime and serves the existing
 root-level PHP pages. The site requires a remote MySQL database; set `DB_HOST`,
-`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `APP_BASE_URL`, and `KORA_SECRET_KEY` in
-the Vercel project settings. Set `APP_BASE_URL` to the deployed HTTPS URL.
+`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSL_CA`, `APP_BASE_URL`, and
+`KORA_SECRET_KEY` in the Vercel project settings. For this AWS RDS instance,
+set `DB_HOST` to `database-1.clg8mwm4ycjp.eu-north-1.rds.amazonaws.com` and
+`DB_SSL_CA` to `global-bundle.pem`. Set `APP_BASE_URL` to the deployed HTTPS
+URL. Vercel includes the CA bundle with the PHP function deployment.
 
 Do not store credentials in Git. Vercel functions do not share persistent local
 files between invocations, so verify student login and session behavior after
