@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS attqwa_college
     CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
+    COLLATE   if0_43204390_attqwa_college:
 
 USE attqwa_college;
 
